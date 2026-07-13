@@ -1,0 +1,13 @@
+repositories {
+    maven {
+        url 'https://transmit.jfrog.io/artifactory/transmit-security-gradle-release-local/'
+    }
+}
+
+dependencies {
+    implementation 'com.ts.sdk:accountprotection:3.0.5'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
