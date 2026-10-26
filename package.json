@@ -1,0 +1,31 @@
+{
+  "name": "cordova-plugin-drs",
+  "version": "1.0.1",
+  "description": "Transmit Security Account Protection Cordova plugin for iOS and Android",
+  "cordova": {
+    "id": "cordova-plugin-drs",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "cordova-ios",
+    "cordova-android",
+    "ios",
+    "android",
+    "drs",
+    "transmitsecurity",
+    "account-protection"
+  ],
+  "engines": {
+    "cordovaDependencies": {
+      "0.1.0": {
+        "cordova-ios": ">=8.0.0",
+        "cordova-android": ">=14.0.1"
+      }
+    }
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-drs"
+        version="1.0.1">
+
+    <name>cordova-plugin-drs</name>
+    <description>Transmit Security Account Protection Cordova plugin</description>
+    <license>MIT</license>
+
+    <engines>
+        <engine name="cordova-ios"     version=">=8.0.0"  />
+        <engine name="cordova-android" version=">=12.0.0" />
+    </engines>
+
+    <js-module src="www/drs-plugin/account-protection-api.js" name="drs">
+        <clobbers target="cordova.drs" />
+    </js-module>
+
+    <!-- Cordova prepare only copies declared js-module files into platforms/*/www/plugins/. -->
+    <js-module src="www/drs-plugin/lib/logger.js" name="drs-logger" />
+    <js-module src="www/drs-plugin/lib/bridge.js" name="drs-bridge" />
+    <js-module src="www/drs-plugin/lib/telemetry/bridge.js" name="drs-telemetry-bridge" />
+    <js-module src="www/drs-plugin/lib/telemetry/drs-core.js" name="drs-drs-core" />
+    <js-module src="www/drs-plugin/lib/telemetry/ios/ios-points-formatter.js" name="drs-ios-points-formatter" />
+    <js-module src="www/drs-plugin/lib/telemetry/ios/ios-events.js" name="drs-ios-events" />
+    <js-module src="www/drs-plugin/lib/telemetry/android/android-events.js" name="drs-android-events" />
+
+    <js-module src="www/drs-plugin/lib/telemetry/events.js" name="drs-events">
+        <runs />
+    </js-module>
+
+    <!-- Enables Kotlin in the Cordova app module so DRSPlugin.kt compiles. -->
+    <!-- Cordova resets IS_GRADLE_PLUGIN_KOTLIN_ENABLED=false on every prepare; this re-enables it. -->
+    <hook type="after_prepare" src="scripts/enable-android-kotlin.js" />
+    <!-- Keep Gradle wrapper on cordova-android's pinned version (AS may bump it to 9.x and break sync). -->
+    <hook type="after_prepare" src="scripts/pin-android-gradle-wrapper.js" />
+    <!-- cordova-ios always generates empty Podfile/Pods even for SPM-only plugins; strip them. -->
+    <hook type="after_prepare" src="scripts/remove-unused-ios-cocoapods.js" />
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="DRSPlugin">
+                <param name="android-package" value="com.transmitsecurity.drs.DRSPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        </config-file>
+
+        <source-file src="src/android/DRSPlugin.kt"
+                     target-dir="app/src/main/kotlin/com/transmitsecurity/drs" />
+        <framework src="src/android/cordova-plugin-drs.gradle"
+                   custom="true" type="gradleReference" />
+    </platform>
+
+    <platform name="ios" package="swift">
+        <config-file target="config.xml" parent="/*">
+            <feature name="DRSPlugin">
+                <param name="ios-package" value="DRSPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+            <string>This app uses your location to enrich account protection signals.</string>
+        </config-file>
+    </platform>
+</plugin>
